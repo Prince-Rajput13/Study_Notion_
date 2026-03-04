@@ -1,7 +1,9 @@
 const User=require("../models/User");
 const OTP=require("../models/OTP");
 const otpGenerator=require("otp-generator");
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 // sendOTP
 exports.sendOTP= async(req,res)=>{
     try {
@@ -21,7 +23,7 @@ exports.sendOTP= async(req,res)=>{
             lowerCaseAlphabets:false,
             specialChars:true
         });
-        cosnt result= await OTP.findOne({otp:otp});
+        const result= await OTP.findOne({otp:otp});
         while(result){
             otp= otpGenerator.generate(6,{
                 upperCaseAlphabets:false,
@@ -50,7 +52,14 @@ exports.sendOTP= async(req,res)=>{
 exports.signUp= async (req, res)=>{
     try {
         //data fetch 
-        const {email, firstName, lastName, password, confirmPassword, accountType, contactNumber, otp}=req.body();
+        const {email,
+             firstName, 
+             lastName, 
+             password, 
+             confirmPassword, 
+             accountType, 
+             contactNumber, 
+             otp}=req.body();
         //validate
         if(!firstName || !lastName || !email || !password || !confirmPassword || !otp){
             return res.status(401).json({
@@ -59,7 +68,7 @@ exports.signUp= async (req, res)=>{
             })
         }
         // pass=confirm password
-        if({password}!=={confirmPassword}){
+        if(password!==confirmPassword){
             return res.status(401).json({
                 success:false,
                 message:"passwords not matched"
@@ -75,15 +84,34 @@ exports.signUp= async (req, res)=>{
         }
 
         //find recent otp
-        cosnt recentOtp = await
+        const recentOtp = (await OTP.find({emial})).toSorted({cratedAt:-1}).limit(1);
         //otp verification
+        if(otp.length()==0 || otp!==recentOtp ){
+            return res.status(401).json({
+                success:false,
+                message:"wrong OTP"
+            })
+        }
     
         //hash password
+        const hashedPassword = await bcrypt.hash(password,10);
         //store
-        const signUpPayLoad={};
-        const 
-
-    
+        const profileDetails= await Profile.create({
+            gender: null,
+            dateOfBirth: null,
+            contactNumber:null,
+            about:null
+        });
+        const signUpPayLoad={email, 
+            firstName, 
+            lastName, 
+            hashedPassword, 
+            accountType,
+            additionalDetails:profileDetails._id,
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
+        };
+        const details = await User.create(signUpPayLoad);
+        console.log(details);
         //send res
         return res.status(200).json({
             success:true,
@@ -99,6 +127,70 @@ exports.signUp= async (req, res)=>{
     }
 }
 
-// authorization :- 1.isstudent
-//                  2. isinstructor
-//                  3. isadmin
+// Login
+exports.Login = async (req,res) =>{
+    try {
+        //fetch
+        const {email,password}=req.body();
+        //validation
+        if(!email || !password){
+            return res.status(403).json({
+                success:false,
+                message:"Not validated"
+            })
+        }
+        // user exist 
+        const user = await User.findOne({email}).populate("additionalDetials");
+        if(!user){
+            return res.status(402).json({
+                success:false
+            })
+        }
+        // password match
+        if(await bcrypt.compare(password, user.password)){
+            const payLoad= {
+                email: user.email,
+                id:_id,
+                accountType:user.accountType,
+            }
+            // create Jwt token
+            const token = jwt.sign(payLoad, process.env,JWT_SECRET, {
+                expiresIn:"2h",
+            })
+            user.token=token;
+            user.password= undefined;
+            //create cookie
+            const options = {
+                expires: new Date(Date.now() + 3*24*60*60*1000),
+                httpOnly:true
+            }
+            //send res
+             res.cookie("token",token,options).status(200).json({
+                success:true,
+                message:"Login Successfully"
+            })
+        }
+        else{
+            return res.status(200).json({
+                success:false,
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"Login failed"
+        })
+    }
+}
+
+// change Password
+
+exports.changePassword= async (req,res)=>{
+    //get data from req
+    // get oldpass, new pass, confirm pass,
+    // validation
+    //update PWD
+    //send email Password updated
+    //send res
+}
