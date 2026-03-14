@@ -19,17 +19,20 @@ const OTPSchema = new mongoose.Schema({
 
 async function sendVerificationEmial(email,otp){
     try{
-        await mailResponse = mailSender(email,"Verification Email From StudyNotion", otp);
-        console.log("email sent successully", mailResponse);
+        const mailResponse = mailSender(email,"Verification Email From StudyNotion", otp);
+        console.log("email sent successully", mailResponse.response);
     }
     catch(error){
         console.log("there is some error while sending mail :", error);
     }
 }
 
-OTPSchema.pre("save", async function next()){
-    sendVerificationEmial(this.email, this,otp);
-    next();
-}
+OTPSchema.pre("save", async function (next) {
+	console.log("New document saved to database");
+	if (this.isNew) {
+		await sendVerificationEmail(this.email, this.otp);
+	}
+	next();
+});
 
 module.exports = mongoose.model("OTP", OTPSchema);
