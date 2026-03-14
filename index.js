@@ -9,8 +9,8 @@ const profileRoute = require("./routes/Profile");
 
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
-
 require("dotenv").config();
+
 
 //reuire so the backend can enteretain frontend requests
 const cors = require("cors");

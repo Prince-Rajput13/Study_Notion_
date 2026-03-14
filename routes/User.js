@@ -11,7 +11,7 @@ const {
     resetPassword,
     resetPasswordToken
 } = require("../controllers/ResetPassword");
-
+    
 const {auth} = require("../middleware/auth");
 
 router.post("/login",Login);
