@@ -24,23 +24,23 @@ exports.sendOTP= async(req,res)=>{
         var otp= otpGenerator.generate(6,{
             upperCaseAlphabets:false,
             lowerCaseAlphabets:false,
-            specialChars:true
+            specialChars:false
         });
-        const result= await OTP.findOne({otp:otp});
+        var result= await OTP.findOne({otp:otp});
         while(result){
             otp= otpGenerator.generate(6,{
                 upperCaseAlphabets:false,
                 lowerCaseAlphabets:false,
-                specialChars:true
+                specialChars:false
             });
             result= await OTP.findOne({otp:otp});   
         }
         const otpPayload={email,otp};
-        const otpBody= await OTP.create(otpPayload);
-        console.log(otpBody);
+        await OTP.create(otpPayload);
         return res.status(200).json({
             success:true,
-            message:"otp send successfully"
+            message:"otp send successfully",
+            otp,
         })
 
     } catch (error) {
