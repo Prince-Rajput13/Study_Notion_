@@ -2,31 +2,39 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/User");
 //auth
-exports.auth= async (req,res,next)=>{
+exports.auth = async (req, res, next) => {
     try {
-        const token= req.cookie.token || req.body.token || req.header("Authorization").raplace("Bearer",""); 
-        if(!token){
-            res.status(401).json({
-                success:false,
-            })
+        let token =
+            req.cookies?.token ||
+            req.body?.token ||
+            req.header("Authorization")?.replace("Bearer ", "");
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Token missing"
+            });
         }
-        //verify the token
-        try{
-            const decode = await jwt.verify(token, process.env.JWT_SECRET);
-            console.log(decode); 
-            req.user=decode;
-        }catch(err){
-            res.status(402).json({
-                success:false,
-            })
+
+        try {
+            const decode = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = decode;
+        } catch (err) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid token"
+            });
         }
+
         next();
+
     } catch (error) {
-        res.status(402).json({
-            success:false,
-        })
+        return res.status(500).json({
+            success: false,
+            message: "Auth failed"
+        });
     }
-}
+};
 //is student
 exports.isStudent =async (req,res,next)=>{
     try {

@@ -52,90 +52,105 @@ exports.sendOTP= async(req,res)=>{
     }
 }
 //sign up
-exports.signUp= async (req, res)=>{
+exports.signUp = async (req, res) => {
     try {
-        //data fetch 
-        const {email,
-             firstName, 
-             lastName, 
-             password, 
-             confirmPassword, 
-             accountType, 
-             contactNumber, 
-             otp}=req.body;
-        //validate
-        if(!firstName || !lastName || !email || !password || !confirmPassword || !otp){
-            return res.status(401).json({
-                success:false,
-                message:"not valide data"
-            })
+        const {
+            email,
+            firstName,
+            lastName,
+            password,
+            confirmPassword,
+            accountType,
+            contactNumber,
+            otp
+        } = req.body;
+
+        // validation
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
         }
-        // pass=confirm password
-        if(password!==confirmPassword){
-            return res.status(401).json({
-                success:false,
-                message:"passwords not matched"
-            })
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match"
+            });
         }
-        // email verification
+
+        // check user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
-            success: false,
-            message: "User already exists. Please sign in to continue.",
+                success: false,
+                message: "User already exists"
             });
         }
-        //find recent otp
-        const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-        //otp verification
-        if(recentOtp.length==0 || otp!==recentOtp[0].otp ){
-            return res.status(401).json({
-                success:false,
-                message:"wrong OTP"
-            })
+
+        // find OTP
+        const recentOtp = await OTP.find({ email })
+            .sort({ createdAt: -1 })
+            .limit(1);
+
+        if (recentOtp.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP not found"
+            });
         }
-    
-        //hash password
-        const hashedPassword = await bcrypt.hash(password,10);
 
-        let approved = "";
-		approved === "Instructor" ? (approved = false) : (approved = true);
+        // OTP verification
+        if (String(otp) !== String(recentOtp[0].otp)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP"
+            });
+        }
 
-        //store
-        const profileDetails= await Profile.create({
+        // hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // correct approved logic
+        const approved = accountType === "Instructor" ? false : true;
+
+        // create profile
+        const profileDetails = await Profile.create({
             gender: null,
             dateOfBirth: null,
-            contactNumber:null,
-            about:null
+            contactNumber: null,
+            about: null
         });
 
+        // create user
         const user = await User.create({
             firstName,
             lastName,
             email,
             contactNumber,
             password: hashedPassword,
-            accountType: accountType,
-            approved: approved,
-            additionalDetails: profileDetails._id,
-            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+            accountType,
+            approved,
+            additionalDetail: profileDetails._id,
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
         });
-        //send res
+
         return res.status(200).json({
-            success:true,
-            message:"Sign UP sccessfully",
+            success: true,
+            message: "Signup successful",
             user
         });
-    
-    } catch (error) {
-        console.log(error);
-        return res.status(501).json({
-            success:false,
-            message:"sign up failed"
-        })
-    }
-}
 
+    } catch (error) {
+        console.error("Signup Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Signup failed",
+            error: error.message
+        });
+    }
+};
 // Login
 exports.Login = async (req,res) =>{
     try {
@@ -149,7 +164,7 @@ exports.Login = async (req,res) =>{
             })
         }
         // user exist 
-        const user = await User.findOne({email}).populate("additionalDetails");
+        const user = await User.findOne({email}).populate("additionalDetail");
         if(!user){
             return res.status(402).json({
                 success:false
