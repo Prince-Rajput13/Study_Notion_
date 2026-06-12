@@ -9,7 +9,7 @@ const coursesSchema = new mongoose.Schema({
         required: true,
         ref: "user",
     },
-    whatYouWillLearn: {
+    whatYouWillLearn: { 
         type: String,
     },
     courseContent: [

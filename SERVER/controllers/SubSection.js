@@ -71,9 +71,7 @@ exports.updateSubSection = async (req, res) => {
         subSection.videoUrl = uploadDetails.secure_url
         subSection.timeDuration = `${uploadDetails.duration}`
       }
-  
       await subSection.save()
-  
       return res.json({
         success: true,
         message: "Section updated successfully",

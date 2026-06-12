@@ -12,7 +12,7 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 
-//reuire so the backend can enteretain frontend requests
+//require so the backend can enteretain frontend requests
 const cors = require("cors");
 
 const {cloudinaryConnect} = require("./config/cloudinary");
@@ -27,7 +27,6 @@ app.use(cors({
     origin: "https://locathost:3000",
     credentials:true,
 }))
-
 app.use(
     fileUpload({
         useTempFiles:true,
@@ -35,7 +34,6 @@ app.use(
     })
 )
 cloudinaryConnect();
-
 app.use("/api/v1/auth",userRoute);
 app.use("/api/v1/profile",profileRoute);
 app.use("/api/v1/payment",paymentRoute);

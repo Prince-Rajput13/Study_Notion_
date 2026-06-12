@@ -7,6 +7,7 @@ const mailSender = require("../utils/mailSender");
 const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 const Profile = require("../models/Profile");
 require("dotenv").config();
+
 // sendOTP
 exports.sendOTP= async(req,res)=>{
     try {
@@ -35,6 +36,7 @@ exports.sendOTP= async(req,res)=>{
             });
             result= await OTP.findOne({otp:otp});   
         }
+         
         const otpPayload={email,otp};
         await OTP.create(otpPayload);
         return res.status(200).json({
@@ -51,6 +53,7 @@ exports.sendOTP= async(req,res)=>{
         })
     }
 }
+
 //sign up
 exports.signUp = async (req, res) => {
     try {
@@ -133,7 +136,7 @@ exports.signUp = async (req, res) => {
             accountType,
             approved,
             additionalDetail: profileDetails._id,
-            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`
         });
 
         return res.status(200).json({
@@ -151,6 +154,7 @@ exports.signUp = async (req, res) => {
         });
     }
 };
+
 // Login
 exports.Login = async (req,res) =>{
     try {
@@ -214,7 +218,6 @@ exports.changePassword = async (req, res) => {
     try {
         // Get user data from req.user
         const userDetails = await User.findById(req.user.id);
-
         // Get old password, new password, and confirm new password from req.body
         const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
