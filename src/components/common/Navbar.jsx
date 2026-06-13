@@ -57,7 +57,7 @@ function Navbar() {
             {
               token===null && (
                 <Link to="/login">
-                  <button>
+                  <button className='border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100 rounded-md'>
                     Login
                   </button>
                 </Link>
@@ -66,7 +66,7 @@ function Navbar() {
             {
               token===null && (
                 <Link to="/signin">
-                  <button>
+                  <button className='border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100 rounded-md'>
                     Sign in
                   </button>
                 </Link>
