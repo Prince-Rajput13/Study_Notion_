@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import frameimg from "../../../assets/Images/frame.png";
-import LoginForm from "../Auth/LoginForm";
-import SignupForm from "../Auth/SignupForm";
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 import React from 'react'
 
 function Template({heading, dec1, dec2, image, formType}) {
@@ -26,7 +26,7 @@ function Template({heading, dec1, dec2, image, formType}) {
                             </span>
                         </p>
                         {
-                            formType==="Login"? <LoginForm/>: <SignupForm/>
+                            formType==="login"? (<LoginForm/>): (<SignupForm/>)
                         }
                     </div>
                     <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0">

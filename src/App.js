@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useState } from "react";
 import Navbar from "./components/common/Navbar";
-
+import ForgotPassword from "./pages/ForgotPassword";
 function App() {
   const [Loggedin,setLoggedin] = useState(false);
   return (
@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signin" element={<Signup/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
       </Routes>
     </div>
   );

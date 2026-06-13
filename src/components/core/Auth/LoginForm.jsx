@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useDispatch } from 'react-redux'
+import {login} from "../../../services/operations/authAPI"
 
 function LoginForm() {
     const navigate = useNavigate()
@@ -16,15 +17,17 @@ function LoginForm() {
     const HandleonChange = (e)=>{
         setFormdata((prevData)=>({
             ...prevData,
-            [e.target.value] : e.target.value
+            [e.target.name] : e.target.value
         }))
     }
     const HandleonSubmit =(e)=>{
-        e.preventDeafault()
+        e.preventDefault()
         dispatch(login(email,password,navigate))
     }
   return (
-    <form onSubmit={HandleonSubmit} className="mt-6 flex w-full flex-col gap-y-4">
+    <form 
+    onSubmit={HandleonSubmit} 
+    className="mt-6 flex w-full flex-col gap-y-4">
         <label className="w-full">
             <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
                 Email Address <sup className="text-pink-200">*</sup>
@@ -48,7 +51,7 @@ function LoginForm() {
             </p>
             <input
                 required
-                type='text'
+                type= {showPassword ? "text" : "password"}
                 name='password'
                 value={password}
                 onChange={HandleonChange}
