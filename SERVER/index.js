@@ -24,7 +24,7 @@ database.connect();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "https://locathost:3000",
+    origin: "http://localhost:3000",
     credentials:true,
 }))
 app.use(
@@ -38,6 +38,7 @@ app.use("/api/v1/auth",userRoute);
 app.use("/api/v1/profile",profileRoute);
 app.use("/api/v1/payment",paymentRoute);
 app.use("/api/v1/course",courseRoute);
+// app.use("/api/v1/reach", contactUsRoute);
 
 app.get("/",(req,res)=>{
     return res.status(200).json({

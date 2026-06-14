@@ -20,6 +20,6 @@ router.post("/changepassword",changePassword);
 router.post("/sendotp",sendOTP);
 
 router.post("/resetpassword", resetPassword);
-router.post("/resetpasswordtoken", resetPasswordToken);
+router.post("/reset-password-token", resetPasswordToken);
 
 module.exports = router
