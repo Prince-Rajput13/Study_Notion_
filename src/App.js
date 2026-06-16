@@ -8,6 +8,10 @@ import Navbar from "./components/common/Navbar";
 import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import VerifyEmail from "./pages/VerifyEmail";
+import PrivateRoute from "./components/core/Auth/PrivateRoute";
+import OpenRoute from "./components/core/Auth/OpenRoute";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 function App() {
   const [Loggedin,setLoggedin] = useState(false);
   return (
@@ -15,11 +19,40 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/signin" element={<Signup/>}/>
-        <Route path="/forgot-password" element={<ForgotPassword/>}/>
-        <Route path="/update-password/:id" element={<UpdatePassword/>}/>
-        <Route path="verify-email" element={<VerifyEmail/>}/>
+        <Route path="/login" element={<OpenRoute>
+            <Login/>
+          </OpenRoute>
+        }/>
+        <Route path="/signin" element={
+          <OpenRoute>
+            <Signup/>
+          </OpenRoute>
+        }/>
+        <Route path="/forgot-password" element={
+          <OpenRoute>
+            <ForgotPassword/>
+          </OpenRoute>
+        }/>
+        <Route path="/update-password/:id" element={
+          <OpenRoute>
+            <UpdatePassword/>
+          </OpenRoute>
+        }/>
+        <Route path="verify-email" element={
+          <OpenRoute>
+            <VerifyEmail/>
+          </OpenRoute>
+        }/>
+        <Route path="/about" element={
+          <OpenRoute>
+            <AboutUs/>
+          </OpenRoute>
+        }/>
+        <Route path="/contact" element={
+          <OpenRoute>
+            <ContactUs/>
+          </OpenRoute>
+        }/>
       </Routes>
     </div>
   );
