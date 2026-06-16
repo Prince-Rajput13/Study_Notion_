@@ -64,7 +64,6 @@ export function signUp(
         confirmPassword,
         otp,
       })
-
       console.log("SIGNUP API RESPONSE............", response)
 
       if (!response.data.success) {
