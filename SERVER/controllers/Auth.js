@@ -162,16 +162,17 @@ exports.Login = async (req,res) =>{
         const {email,password}=req.body;
         //validation
         if(!email || !password){
-            return res.status(403).json({
+            return res.status(400).json({
                 success:false,
-                message:"Not validated"
+                message:"Please Fill required details"
             })
         }
         // user exist 
         const user = await User.findOne({email}).populate("additionalDetail");
         if(!user){
-            return res.status(402).json({
-                success:false
+            return res.status(401).json({
+                success:false,
+                message: `User is not Registered with Us Please SignUp to Continue`,
             })
         }
         // password match
@@ -195,12 +196,15 @@ exports.Login = async (req,res) =>{
             //send res
              res.cookie("token",token,options).status(200).json({
                 success:true,
+                token,
+                user,
                 message:"Login Successfully"
             })
         }
         else{
-            return res.status(200).json({
+            return res.status(401).json({
                 success:false,
+                message: `Password is incorrect`,
             })
         }
     } catch (error) {

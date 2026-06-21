@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast"
 import { setLoading, setToken } from "../../slices/authSlice"
 import { resetCart } from "../../slices/cartSlice"
-import { setUser } from "../../slices/profileSlice"
+import { setUser } from "../../slices/profileSlice";
 import { apiConnector } from "../apiconnector"
 import { endpoints } from "../apis"
 
@@ -100,11 +100,11 @@ export function login(email, password, navigate) {
       toast.success("Login Successful")
       console.log("before set token");
       dispatch(setToken(response.data.token))
-      console.log("before set user");                
       const userImage = response.data?.user?.image
-        ? response.data.user.image
-        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
+      ? response.data.user.image
+      : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
       
+      console.log("before set user");                
         dispatch(setUser({ ...response.data.user, image: userImage }))
       console.log("before localStorage")
       localStorage.setItem("token", JSON.stringify(response.data.token))
