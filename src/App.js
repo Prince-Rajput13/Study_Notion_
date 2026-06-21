@@ -43,7 +43,7 @@ function App() {
             <ForgotPassword/>
           </OpenRoute>
         }/>
-        <Route path="/update-password/:id" element={
+        <Route path="update-password/:id" element={
           <OpenRoute>
             <UpdatePassword/>
           </OpenRoute>

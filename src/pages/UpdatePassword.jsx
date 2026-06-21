@@ -12,11 +12,11 @@ function UpdatePassword() {
     const location =useLocation();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const {password,confirmPassword} = FormData;
-    const [formDAta,setFormData] = useState({
+    const [formData,setFormData] = useState({
         password:"",
         confirmPassword:""
     });
+    const {password,confirmPassword} = formData;
     const HandleonChange = (e)=>{
         setFormData((prevData)=>({
             ...prevData,
@@ -26,7 +26,7 @@ function UpdatePassword() {
     const HandleonSubmit =(e)=>{
             e.preventDefault()
             const token = location.pathname.split("/").at(-1)
-            dispatch(resetPassword(password,confirmPassword,token,navigate))
+            dispatch(resetPassword(formData.password,formData.confirmPassword,token))
     }
   return (
     <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
@@ -48,7 +48,7 @@ function UpdatePassword() {
                             required
                             type= {showPassword ? "text" : "password"}
                             name='password'
-                            value={password}
+                            value={formData.password}
                             onChange={HandleonChange}
                             placeholder='Enter Password'
                             className="form-style w-full !pr-10"
@@ -72,7 +72,7 @@ function UpdatePassword() {
                             required
                             type= {showConfirmPassword ? "text" : "password"}
                             name='confirmPassword'
-                            value={confirmPassword}
+                            value={formData.confirmPassword}
                             onChange={HandleonChange}
                             placeholder='Enter Confirm Password'
                             className="form-style w-full !pr-10"

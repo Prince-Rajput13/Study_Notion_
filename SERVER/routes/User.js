@@ -19,7 +19,7 @@ router.post("/signup",signUp);
 router.post("/changepassword",changePassword);
 router.post("/sendotp",sendOTP);
 
-router.post("/resetpassword", resetPassword);
+router.post("/reset-password", resetPassword);
 router.post("/reset-password-token", resetPasswordToken);
 
 module.exports = router

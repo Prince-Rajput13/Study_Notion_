@@ -19,7 +19,7 @@ exports.resetPasswordToken = async (req,res,next)=>{
             },
             {new:true},
         )
-        const url=`http://localhost:3000/password-reset/${token}`
+        const url=`http://localhost:3000/update-password/${token}`
         await mailSender(email,
             "Reset Password Link",
             `Password Reset Link: ${url}`,
@@ -39,9 +39,10 @@ exports.resetPasswordToken = async (req,res,next)=>{
 exports.resetPassword = async (req,res)=>{
     try {
         //fetch data
-        const {password , confirmPassword , token} = req.body();
+        const {password , confirmPassword , token} = req.body;
         //validate
-        if(password != confirmPassword){
+        console.log("TOKEN RECEIVED:", token);
+        if(password !== confirmPassword){
             return res.status(401).json({
                 success:false,
                 message:"password not matched to confirm password"
@@ -49,29 +50,37 @@ exports.resetPassword = async (req,res)=>{
         }
         //user details
         const userDetails = await User.findOne({token:token})
+        console.log("PASSWORD:", password);
+        console.log("CONFIRM PASSWORD:", confirmPassword);
+        console.log("TOKEN:", token);
+        console.log("USER:", userDetails);
+        console.log("EXPIRY:", userDetails?.resetPasswordExpires);
         //token timeout check
-        if(userDetails.resetPasswordExpires > Date.now()){
+        if(!(userDetails.resetPasswordExpires > Date.now())){
             return res.status(401).json({
                 success:false,
             })
         }
         //hash password
         const hashedPassword = await bcrypt.hash(password,10);
+        console.log("After hash");
         // update changes
         await User.findOneAndUpdate(
             {token:token},
             {password:hashedPassword},
             {new:true},
         )
+        console.log("After update");
         // send res
         return res.status(200).json({
             success:true,
-            message:""
+            message:"Password Reset Successfully"
         })
     } catch (error) {
+        console.log("Reset Password",error);
         return res.status(500).json({
             success:false,
-            message:"Reset password Failed"
+            message: error.message,
         })
     }
 }
