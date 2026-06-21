@@ -12,6 +12,9 @@ import PrivateRoute from "./components/core/Auth/PrivateRoute";
 import OpenRoute from "./components/core/Auth/OpenRoute";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import Dashboard from "./pages/Dashboard";
+import MyProfile from "./components/core/Dashboard/MyProfile";
+import Error from "./pages/Error";
 function App() {
   const [Loggedin,setLoggedin] = useState(false);
   return (
@@ -53,6 +56,17 @@ function App() {
             <ContactUs/>
           </OpenRoute>
         }/>
+        <Route 
+          element={
+            <PrivateRoute>
+              <Dashboard/>
+            </PrivateRoute>
+          }>
+            <Route path="dashboard/my-profile" element={<MyProfile/>} />
+            {/* <Route path="dashboard/settings" element={<MyProfile/>} /> */}
+
+        </Route>
+        <Route path="*" element={<Error />} /> 
       </Routes>
     </div>
   );
